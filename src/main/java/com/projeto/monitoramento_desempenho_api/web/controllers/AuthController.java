@@ -1,5 +1,6 @@
 package com.projeto.monitoramento_desempenho_api.web.controllers;
 
+import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserRegisterDTO;
 import com.projeto.monitoramento_desempenho_api.application.services.AuthService;
@@ -23,8 +24,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDTO userLoginDTO) {
-        String message = authService.loginUser(userLoginDTO);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<LoginResponse> login(@RequestBody UserLoginDTO userLoginDTO) {
+        LoginResponse loginResponse = authService.loginUser(userLoginDTO);
+        return ResponseEntity.ok(loginResponse);
     }
 }

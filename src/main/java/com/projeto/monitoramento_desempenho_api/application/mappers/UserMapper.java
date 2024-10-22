@@ -8,6 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-    @Mapping(target = "id", ignore = true) // O ID será gerado automaticamente
+    @Mapping(target = "id", ignore = true)
     User toUser(UserRegisterDTO userRegisterDTO);
 }

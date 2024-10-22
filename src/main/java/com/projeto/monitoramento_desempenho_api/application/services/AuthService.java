@@ -1,10 +1,16 @@
 package com.projeto.monitoramento_desempenho_api.application.services;
 
+import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserRegisterDTO;
 import com.projeto.monitoramento_desempenho_api.application.mappers.UserMapper;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
+import com.projeto.monitoramento_desempenho_api.domain.entities.UserRole;
 import com.projeto.monitoramento_desempenho_api.infra.repositories.UserRepository;
+import com.projeto.monitoramento_desempenho_api.infra.security.TokenService;
+import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,37 +19,52 @@ import java.util.Optional;
 
 @Service
 public class AuthService {
+
+
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    public AuthService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, TokenService tokenService) {
+        this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
     }
 
     @Transactional
-    public void registerUser(UserRegisterDTO userRegisterDTO){
-        userRepository.findByEmail(userRegisterDTO.email())
-                .ifPresent(user -> {
-                    throw new IllegalArgumentException("Email já cadastrado.");
-                });
-
-        User user = userMapper.toUser(userRegisterDTO);
-        user.setPassword(passwordEncoder.encode(userRegisterDTO.password()));
-        userRepository.save(user);
-    }
-
-    public String loginUser(UserLoginDTO userLoginDTO) {
-        User user = userRepository.findByEmail(userLoginDTO.email())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
-
-        if (!passwordEncoder.matches(userLoginDTO.password(), user.getPassword())) {
-            throw new IllegalArgumentException("Senha incorreta.");
+    public void registerUser(UserRegisterDTO userRegisterDTO) {
+        Optional<User> existingUser = userRepository.findByEmail(userRegisterDTO.email());
+        if (existingUser.isPresent()) {
+            throw new IllegalArgumentException("Email já cadastrado.");
         }
 
-        return "Login bem-sucedido!";
+        String encryptedPassword = passwordEncoder.encode(userRegisterDTO.password());
+
+        User newUser = userMapper.toUser(userRegisterDTO);
+        newUser.setPassword(encryptedPassword);
+        newUser.setRole(UserRole.ADMIN);
+
+        userRepository.save(newUser);
+    }
+
+    public LoginResponse loginUser(UserLoginDTO userLoginDTO) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userLoginDTO.email(), userLoginDTO.password()
+        );
+
+        var authentication = authenticationManager.authenticate(authToken);
+
+        UserAuthenticated userAuthenticated = (UserAuthenticated) authentication.getPrincipal();
+
+        User user = userAuthenticated.getUser();
+
+        String token = tokenService.generateToken(user);
+
+        return new LoginResponse(token);
     }
 
 }
