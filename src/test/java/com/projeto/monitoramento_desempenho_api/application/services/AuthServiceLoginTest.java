@@ -2,9 +2,9 @@ package com.projeto.monitoramento_desempenho_api.application.services;
 
 import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
-import com.projeto.monitoramento_desempenho_api.infra.config.security.TokenService;
-import com.projeto.monitoramento_desempenho_api.infra.config.security.UserAuthenticated;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
+import com.projeto.monitoramento_desempenho_api.infra.security.TokenService; // Corrigir o import
+import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,12 +40,14 @@ class AuthServiceLoginTest {
     void shouldLoginUserSuccessfully() {
         UserLoginDTO userLoginDTO = new UserLoginDTO("test@example.com", "password123");
 
-        Authentication authentication = mock(Authentication.class);
-        UserAuthenticated userAuthenticated = mock(UserAuthenticated.class);
         User user = new User();
-        when(authentication.getPrincipal()).thenReturn(userAuthenticated);
-        when(userAuthenticated.user()).thenReturn(user);
+        user.setEmail("test@example.com");
+        user.setPassword("password123");
 
+        Authentication authentication = mock(Authentication.class);
+        UserAuthenticated userAuthenticated = new UserAuthenticated(user); // Usando a implementação real
+
+        when(authentication.getPrincipal()).thenReturn(userAuthenticated);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(tokenService.generateToken(user)).thenReturn("token123");
 
@@ -68,6 +70,4 @@ class AuthServiceLoginTest {
 
         verify(tokenService, never()).generateToken(any(User.class));
     }
-
-
 }

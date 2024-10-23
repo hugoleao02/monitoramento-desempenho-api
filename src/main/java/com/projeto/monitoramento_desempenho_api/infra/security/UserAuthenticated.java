@@ -1,7 +1,7 @@
 package com.projeto.monitoramento_desempenho_api.infra.security;
 
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
-import com.projeto.monitoramento_desempenho_api.domain.entities.UserRole;
+import com.projeto.monitoramento_desempenho_api.enums.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,19 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class UserAuthenticated implements UserDetails {
+public record UserAuthenticated(User user) implements UserDetails {
 
-    private final User user;
-
-    public UserAuthenticated(User user) {
-        this.user = user;
-    }
-
-    public User getUser() {
-        return this.user;
-    }
-
-    // Implementações de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (user.getRole() == UserRole.ADMIN) {

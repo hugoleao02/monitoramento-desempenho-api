@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -21,10 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class AuthServiceRegisterTest {
-
-
-    @Mock
-    private AuthenticationManager authenticationManager;
 
     @Mock
     private UserRepository userRepository;

@@ -2,8 +2,9 @@ package com.projeto.monitoramento_desempenho_api.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.projeto.monitoramento_desempenho_api.application.exceptions.TokenCreationException;
+import com.projeto.monitoramento_desempenho_api.application.exceptions.TokenValidationException;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,8 @@ public class TokenService {
                     .withSubject(user.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
+        } catch (TokenCreationException exception) {
+            throw new TokenCreationException("Error while generating token");
         }
     }
 
@@ -39,7 +40,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid token", exception);
+            throw new TokenValidationException("Invalid token");
         }
     }
 

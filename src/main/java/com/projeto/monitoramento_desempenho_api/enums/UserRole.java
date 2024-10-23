@@ -1,4 +1,4 @@
-package com.projeto.monitoramento_desempenho_api.domain.entities;
+package com.projeto.monitoramento_desempenho_api.enums;
 
 public enum UserRole {
     ADMIN("admin"),

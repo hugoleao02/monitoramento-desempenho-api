@@ -3,9 +3,10 @@ package com.projeto.monitoramento_desempenho_api.application.services;
 import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserRegisterDTO;
+import com.projeto.monitoramento_desempenho_api.application.exceptions.UserAlreadyExistsException;
 import com.projeto.monitoramento_desempenho_api.application.mappers.UserMapper;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
-import com.projeto.monitoramento_desempenho_api.domain.entities.UserRole;
+import com.projeto.monitoramento_desempenho_api.enums.UserRole;
 import com.projeto.monitoramento_desempenho_api.infra.repositories.UserRepository;
 import com.projeto.monitoramento_desempenho_api.infra.security.TokenService;
 import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
@@ -39,7 +40,7 @@ public class AuthService {
     public void registerUser(UserRegisterDTO userRegisterDTO) {
         Optional<User> existingUser = userRepository.findByEmail(userRegisterDTO.email());
         if (existingUser.isPresent()) {
-            throw new IllegalArgumentException("Email já cadastrado.");
+            throw new UserAlreadyExistsException("Email já cadastrado.");
         }
 
         String encryptedPassword = passwordEncoder.encode(userRegisterDTO.password());
@@ -60,7 +61,7 @@ public class AuthService {
 
         UserAuthenticated userAuthenticated = (UserAuthenticated) authentication.getPrincipal();
 
-        User user = userAuthenticated.getUser();
+        User user = userAuthenticated.user();
 
         String token = tokenService.generateToken(user);
 
