@@ -31,22 +31,19 @@ public class TokenService {
             throw new TokenCreationException("Error while generating token");
         }
     }
-
-    public String validateToken(String token) {
+    
+    public String getEmailFromToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()
                     .verify(token)
-                    .getSubject();
+                    .getClaim("email") 
+                    .asString();
         } catch (JWTVerificationException exception) {
             throw new TokenValidationException("Invalid token");
         }
-    }
-
-    public String getEmailFromToken(String token) {
-        return validateToken(token);
     }
 
     private Instant genExpirationDate() {

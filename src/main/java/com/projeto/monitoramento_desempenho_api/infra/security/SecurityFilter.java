@@ -1,5 +1,6 @@
 package com.projeto.monitoramento_desempenho_api.infra.security;
 
+import com.projeto.monitoramento_desempenho_api.application.services.AuthorizationService;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
 import com.projeto.monitoramento_desempenho_api.infra.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -22,30 +23,24 @@ import static java.util.Objects.nonNull;
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-
-    private final UserRepository userRepository;
+    private final AuthorizationService authorizationService;
 
     @Autowired
-    public SecurityFilter(TokenService tokenService, UserRepository userRepository) {
+    public SecurityFilter(TokenService tokenService, AuthorizationService authorizationService) {
         this.tokenService = tokenService;
-        this.userRepository = userRepository;
+        this.authorizationService = authorizationService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = this.recoverToken(request);
-        System.out.println("Token recuperado: " + token); // Log do token
 
         if (nonNull(token)) {
             try {
                 String email = tokenService.getEmailFromToken(token);
-                System.out.println("Email recuperado do token: " + email); // Log do email
 
-                User user = userRepository.findByEmail(email)
-                        .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
-
-                UserDetails userDetails = new UserAuthenticated(user);
+                UserDetails userDetails =  authorizationService.loadUserByUsername(email);
 
                 var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
