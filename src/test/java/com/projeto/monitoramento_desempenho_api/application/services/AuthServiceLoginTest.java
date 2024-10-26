@@ -1,9 +1,9 @@
 package com.projeto.monitoramento_desempenho_api.application.services;
 
-import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
+import com.projeto.monitoramento_desempenho_api.application.dtos.response.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
-import com.projeto.monitoramento_desempenho_api.infra.security.TokenService; // Corrigir o import
+import com.projeto.monitoramento_desempenho_api.infra.security.TokenService;
 import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class AuthServiceLoginTest {
 
     @Test
     @DisplayName("Deve realizar o login com sucesso e retornar um token")
-    void shouldLoginUserSuccessfully() {
+    void should_LoginUser_WhenSuccessfully() {
         UserLoginDTO userLoginDTO = new UserLoginDTO("test@example.com", "password123");
 
         User user = new User();
@@ -45,8 +45,7 @@ class AuthServiceLoginTest {
         user.setPassword("password123");
 
         Authentication authentication = mock(Authentication.class);
-        UserAuthenticated userAuthenticated = new UserAuthenticated(user); // Usando a implementação real
-
+        UserAuthenticated userAuthenticated = new UserAuthenticated(user);
         when(authentication.getPrincipal()).thenReturn(userAuthenticated);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(tokenService.generateToken(user)).thenReturn("token123");
@@ -60,7 +59,7 @@ class AuthServiceLoginTest {
 
     @Test
     @DisplayName("Deve lançar BadCredentialsException quando as credenciais estiverem incorretas")
-    void shouldThrowBadCredentialsExceptionWhenLoginFails() {
+    void should_ThrowBadCredentialsException_WhenLoginFails() {
         UserLoginDTO userLoginDTO = new UserLoginDTO("wrong@example.com", "wrongPassword");
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))

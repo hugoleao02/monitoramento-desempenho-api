@@ -1,6 +1,6 @@
 package com.projeto.monitoramento_desempenho_api.application.services;
 
-import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
+import com.projeto.monitoramento_desempenho_api.application.dtos.response.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserRegisterDTO;
 import com.projeto.monitoramento_desempenho_api.application.exceptions.UserAlreadyExistsException;
@@ -10,6 +10,7 @@ import com.projeto.monitoramento_desempenho_api.enums.UserRole;
 import com.projeto.monitoramento_desempenho_api.infra.repositories.UserRepository;
 import com.projeto.monitoramento_desempenho_api.infra.security.TokenService;
 import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
+    @Autowired
     public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;

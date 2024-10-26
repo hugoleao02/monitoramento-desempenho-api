@@ -40,7 +40,7 @@ class AuthServiceRegisterTest {
 
     @Test
     @Transactional
-    void shouldRegisterUserSuccessfully() {
+    void should_RegisterUser_WhenSuccessfully() {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test User", "test@example.com", "password123");
 
         when(userRepository.findByEmail(userRegisterDTO.email())).thenReturn(Optional.empty());
@@ -56,7 +56,7 @@ class AuthServiceRegisterTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenEmailAlreadyExists() {
+    void should_ThrowException_WhenEmailAlreadyExists() {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO("Test User", "test@example.com", "password123");
 
         when(userRepository.findByEmail(userRegisterDTO.email())).thenReturn(Optional.of(new User()));

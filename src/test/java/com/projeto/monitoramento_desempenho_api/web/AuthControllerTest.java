@@ -1,6 +1,6 @@
 package com.projeto.monitoramento_desempenho_api.web;
 
-import com.projeto.monitoramento_desempenho_api.application.dtos.LoginResponse;
+import com.projeto.monitoramento_desempenho_api.application.dtos.response.LoginResponse;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserLoginDTO;
 import com.projeto.monitoramento_desempenho_api.application.dtos.UserRegisterDTO;
 import com.projeto.monitoramento_desempenho_api.application.services.AuthService;

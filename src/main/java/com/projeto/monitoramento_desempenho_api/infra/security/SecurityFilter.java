@@ -35,10 +35,12 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = this.recoverToken(request);
+        System.out.println("Token recuperado: " + token); // Log do token
 
         if (nonNull(token)) {
             try {
                 String email = tokenService.getEmailFromToken(token);
+                System.out.println("Email recuperado do token: " + email); // Log do email
 
                 User user = userRepository.findByEmail(email)
                         .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));

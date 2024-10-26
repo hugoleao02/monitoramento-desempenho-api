@@ -35,21 +35,21 @@ public record UserAuthenticated(User user) implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true; // Pode implementar lógica para verificar a expiração da conta
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true; // Pode implementar lógica para verificar se a conta está bloqueada
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return true; // Pode implementar lógica para verificar se as credenciais estão expiradas
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isActive(); // Certifique-se de que o método isActive() existe em User
     }
 }

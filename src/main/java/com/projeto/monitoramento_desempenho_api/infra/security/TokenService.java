@@ -2,6 +2,7 @@ package com.projeto.monitoramento_desempenho_api.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.projeto.monitoramento_desempenho_api.application.exceptions.TokenCreationException;
 import com.projeto.monitoramento_desempenho_api.application.exceptions.TokenValidationException;
@@ -26,7 +27,7 @@ public class TokenService {
                     .withSubject(user.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
-        } catch (TokenCreationException exception) {
+        } catch (JWTCreationException exception) {
             throw new TokenCreationException("Error while generating token");
         }
     }

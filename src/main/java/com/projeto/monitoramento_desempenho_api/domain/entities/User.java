@@ -34,6 +34,9 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean active = true;
+
     private LocalDateTime createdAt;
 
     @PrePersist
