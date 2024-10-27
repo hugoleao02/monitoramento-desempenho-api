@@ -85,7 +85,7 @@ public class UserService {
         userFound.setName(request.name());
         userFound.setEmail(request.email());
         userFound.setActive(request.active());
-        userFound.setRole(UserRole.valueOf(request.role().toUpperCase()));
+        userFound.setRole(UserRole.USER);
 
         userRepository.save(userFound);
     }

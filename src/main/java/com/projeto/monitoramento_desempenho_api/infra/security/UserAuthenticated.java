@@ -12,7 +12,7 @@ public record UserAuthenticated(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().getRole()));
+        return List.of(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 
     @Override
