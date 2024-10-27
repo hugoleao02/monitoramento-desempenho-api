@@ -8,7 +8,10 @@ import com.projeto.monitoramento_desempenho_api.application.mappers.UserMapper;
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
 import com.projeto.monitoramento_desempenho_api.enums.UserRole;
 import com.projeto.monitoramento_desempenho_api.infra.repositories.UserRepository;
+import com.projeto.monitoramento_desempenho_api.infra.security.UserAuthenticated;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 public class UserService {
@@ -49,11 +52,23 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserReponse> getAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UUID currentUserId = getCurrentUserId(authentication);
+
         return userRepository.findAll()
                 .stream()
+                .filter(user -> !user.getId().equals(currentUserId))
                 .map(userMapper::toUserReponse)
                 .collect(Collectors.toList());
     }
+
+    private UUID getCurrentUserId(Authentication authentication) {
+        if (nonNull(authentication) && authentication.getPrincipal() instanceof UserAuthenticated userDetails) {
+            return userDetails.user().getId();
+        }
+        return null;
+    }
+
 
     @Transactional(readOnly = true)
     public UserReponse getById(UUID id) {

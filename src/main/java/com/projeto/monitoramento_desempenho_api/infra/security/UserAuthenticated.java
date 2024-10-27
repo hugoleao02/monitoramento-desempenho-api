@@ -1,7 +1,6 @@
 package com.projeto.monitoramento_desempenho_api.infra.security;
 
 import com.projeto.monitoramento_desempenho_api.domain.entities.User;
-import com.projeto.monitoramento_desempenho_api.enums.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,14 +12,7 @@ public record UserAuthenticated(User user) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (user.getRole() == UserRole.ADMIN) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_USER")
-            );
-        } else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        }
+        return List.of(new SimpleGrantedAuthority(user.getRole().getRole()));
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.projeto.monitoramento_desempenho_api.enums;
 
 public enum UserRole {
-    ADMIN("admin"),
-    USER("user");
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
 
     private String role;
 
