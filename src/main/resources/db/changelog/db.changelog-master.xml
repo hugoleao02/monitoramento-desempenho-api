@@ -4,4 +4,54 @@ xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="1" author="monitoramento-desempenho">
+        <createTable tableName="users">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="varchar(255)"/>
+            <column name="active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp(6)"/>
+        </createTable>
+        <sql>ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('ADMIN', 'USER'))</sql>
+    </changeSet>
+
+    <changeSet id="2" author="monitoramento-desempenho">
+        <createTable tableName="kpis">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="calculation_formula" type="varchar(255)"/>
+            <column name="target" type="real"/>
+            <column name="measurement_unit" type="varchar(255)"/>
+            <column name="category" type="varchar(255)"/>
+            <column name="creation_date" type="timestamp(6)"/>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calculated_value" type="double"/>
+        </createTable>
+        <sql>ALTER TABLE kpis ADD CONSTRAINT kpis_category_check CHECK (category IN ('FINANCIAL', 'OPERATIONAL', 'CUSTOMER', 'INTERNAL_PROCESS', 'MARKETING'))</sql>
+    </changeSet>
+
+    <changeSet id="3" author="monitoramento-desempenho">
+        <createTable tableName="kpi_shared_with_users">
+            <column name="kpi_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_kpi_shared_with_users_kpi" references="kpis(id)"/>
+            </column>
+            <column name="shared_with_users" type="uuid"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

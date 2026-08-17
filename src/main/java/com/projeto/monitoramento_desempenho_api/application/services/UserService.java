@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -44,10 +46,15 @@ public class UserService {
         }
 
         User newUser = userMapper.toUser(request);
-        newUser.setPassword("123"); // Password default
-        String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
-        newUser.setPassword(encryptedPassword);
+        newUser.setRole(UserRole.USER);
+        newUser.setPassword(passwordEncoder.encode(generateRandomPassword()));
         userRepository.save(newUser);
+    }
+
+    private String generateRandomPassword() {
+        byte[] randomBytes = new byte[18];
+        new SecureRandom().nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
     }
 
     @Transactional(readOnly = true)

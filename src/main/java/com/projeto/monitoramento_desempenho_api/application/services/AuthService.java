@@ -49,7 +49,7 @@ public class AuthService {
 
         User newUser = userMapper.toUser(userRegisterDTO);
         newUser.setPassword(encryptedPassword);
-        newUser.setRole(UserRole.ADMIN);
+        newUser.setRole(UserRole.USER);
 
         userRepository.save(newUser);
     }
